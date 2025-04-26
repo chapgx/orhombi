@@ -6,7 +6,6 @@ import "core:mem"
 import "core:strconv"
 import "core:testing"
 
-//TODO: allow users to add their own keywords
 
 Type :: string
 

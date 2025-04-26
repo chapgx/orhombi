@@ -9,4 +9,5 @@ Error :: enum {
 	FlagsNotSet,
 	FlagsSliceFull,
 	NoCapForFlags,
+	RootIsNotSet,
 }

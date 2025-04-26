@@ -3,6 +3,7 @@ package rhombi
 
 import "core:fmt"
 import "core:log"
+import "core:sync"
 
 // Run function signature
 RunFn :: proc(args: ..string) -> Error
@@ -21,11 +22,46 @@ Command :: struct {
 
 
 @(private)
+// Sets flags by creating an slice of defined length
 init_flags :: proc(length: int, alloc := context.allocator) -> []^Flag {
 	//TODO: not sure if this is the best way. Deep research this
 	arr := make([]^Flag, length, alloc)
 	return arr
 }
+
+@(private)
+_root: ^Command
+
+@(private)
+once: sync.Once
+
+
+@(private)
+// Sets root command
+set_root :: proc(cmd: ^Command) {
+	sync.once_do(&once, proc() {
+		_root = &Command{}
+	})
+}
+
+// Returns root command. Creates a new root the first time is called
+root :: proc() -> ^Command {
+	if _root == nil {
+		set_root(_root)
+	}
+	return _root
+}
+
+
+// Set flags for root command by taking a slice from an array
+set_root_flags :: proc(flags: []^Flag) -> Error {
+	if _root == nil {
+		return Error.RootIsNotSet
+	}
+	_root.Flags = flags
+	return nil
+}
+
 
 // Add sub commands to command
 add_subs :: proc(cmd: ^Command, commands: ..^Command) -> Error {
