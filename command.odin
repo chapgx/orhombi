@@ -1,6 +1,7 @@
 package rhombi
 
 
+import "./tokens"
 import "core:fmt"
 import "core:log"
 import "core:sync"
@@ -81,6 +82,7 @@ add_subs :: proc(cmd: ^Command, commands: ..^Command) -> Error {
 
 	for c in commands {
 		cmd.Subs[cmd.subs_index] = c
+		tokens.add_command_kw(c.Name)
 		cmd.subs_index += 1
 	}
 
